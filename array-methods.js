@@ -115,14 +115,13 @@ function findStates(arr) {
   }
 }
 
-let statesToBeAdded = dataset.bankBalances.filter(findStates);
-
 function sumInterest(element, curr) {
   total += parseFloat((curr.amount * 0.189) + curr.amount);
   return (Math.round(total * 100) / 100) + 0.01;
 }
 
-sumOfInterests = statesToBeAdded.reduce(sumInterest, 0);
+sumOfInterests = dataset.bankBalances.filter(findStates).reduce(sumInterest, 0);
+
 
 /*
   aggregate the sum of bankBalance amounts
@@ -146,7 +145,7 @@ function groupStates(element) {
   let balance = parseFloat(element.amount);
   let state = element.state;
 
-  if(!stateSums[state]){
+  if (!stateSums[state]) {
     stateSums[state] = 0.0;
   }
 
@@ -154,6 +153,7 @@ function groupStates(element) {
   stateSums[state] = Math.round(stateSums[state] * 100) / 100;
   return stateSums;
 }
+
 dataset.bankBalances.forEach(groupStates);
 
 /*
@@ -175,24 +175,24 @@ dataset.bankBalances.forEach(groupStates);
  */
 var sumOfHighInterests = null;
 
+let selectedStates = ['WI', 'IL', 'WY', 'OH', 'GA', 'DE'];
 let statesArr = Object.keys(stateSums);
-let stateSubsets = ['WI', 'IL', 'WY', 'OH', 'GA', 'DE'];
 let totalInterest = 0;
 
-function filterStates (element) {
-  return !stateSubsets.includes(element);
+function filterStates(element) {
+  return !selectedStates.includes(element);
 };
 
 
-function calculateInterest (element) {
+function calculateInterest(element) {
   return stateSums[element] * 0.189;
 }
 
-function over50k (element) {
+function over50k(element) {
   return element > 50000;
 }
 
-function sumInterests(prev, curr){
+function sumInterests(prev, curr) {
   totalInterest = prev + parseFloat(curr);
   return Math.round(totalInterest * 100) / 100;
 }
@@ -212,11 +212,11 @@ var lowerSumStates = null;
 
 let stateSumArr = Object.entries(stateSums);
 
-function lessThanMil (element){
+function lessThanMil(element) {
   return element[1] < 1000000
 };
 
-function getStates (element){
+function getStates(element) {
   return element[0];
 };
 
@@ -232,16 +232,16 @@ lowerSumStates = stateSumArr.filter(lessThanMil).map(getStates)
 var higherStateSums = null;
 let highSums = 0;
 
-function getOverMill (element){
+function overMill(element) {
   return element[1] > 1000000
 };
 
-function getTotalSums (prev, curr){
+function getTotalSums(prev, curr) {
   highSums = prev + curr[1];
   return highSums;
 };
 
-higherStateSums = stateSumArr.filter(getOverMill).reduce(getTotalSums, 0)
+higherStateSums = stateSumArr.filter(overMill).reduce(getTotalSums, 0)
 
 
 /*
@@ -261,6 +261,20 @@ higherStateSums = stateSumArr.filter(getOverMill).reduce(getTotalSums, 0)
  */
 var areStatesInHigherStateSum = null;
 
+//let selectedStates = ['WI', 'IL', 'WY', 'OH', 'GA', 'DE'];
+
+function findSelectStates(element) {
+  return selectedStates.includes(element[0])
+};
+
+function allOverAmount(element) {
+  return element[1] > 2550000;
+}
+
+areStatesInHigherStateSum = stateSumArr.filter(findSelectStates)
+  .every(allOverAmount)
+
+
 /*
   Stretch Goal && Final Boss
 
@@ -276,6 +290,14 @@ var areStatesInHigherStateSum = null;
   otherwise set it to be `false`
  */
 var anyStatesInHigherStateSum = null;
+
+//let selectedStates = ['WI', 'IL', 'WY', 'OH', 'GA', 'DE'];
+
+function anyOverAmount(element) {
+  return element[1] > 2550000;
+}
+
+anyStatesInHigherStateSum = stateSumArr.filter(findSelectStates).some(anyOverAmount)
 
 
 module.exports = {
