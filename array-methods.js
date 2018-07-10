@@ -152,7 +152,6 @@ function groupStates(element) {
 
   stateSums[state] += balance;
   stateSums[state] = Math.round(stateSums[state] * 100) / 100;
-  console.log(stateSums);
   return stateSums;
 }
 dataset.bankBalances.forEach(groupStates);
@@ -176,12 +175,44 @@ dataset.bankBalances.forEach(groupStates);
  */
 var sumOfHighInterests = null;
 
+let statesArr = Object.keys(stateSums);
+let stateSubsets = ['WI', 'IL', 'WY', 'OH', 'GA', 'DE'];
+let totalInterest = 0;
+
+function filterStates (element) {
+  return !stateSubsets.includes(element);
+};
+
+
+function calculateInterest (element) {
+  return stateSums[element] * 0.189;
+}
+
+function over50k (element) {
+  return element > 50000;
+}
+
+function sumInterests(prev, curr){
+  totalInterest = prev + parseFloat(curr);
+  return Math.round(totalInterest * 100) / 100;
+}
+
+sumOfHighInterests = statesArr.filter(filterStates).map(calculateInterest).filter(over50k).reduce(sumInterests, 0);
+
+
+
+
 /*
   set `lowerSumStates` to be an array of two letter state
   abbreviations of each state where the sum of amounts
   in the state is less than 1,000,000
  */
+
 var lowerSumStates = null;
+
+lowerSumStates = statesArr.filter(function(elem){
+})
+
 
 /*
   aggregate the sum of each state into one hash table
