@@ -210,8 +210,19 @@ sumOfHighInterests = statesArr.filter(filterStates).map(calculateInterest).filte
 
 var lowerSumStates = null;
 
-lowerSumStates = statesArr.filter(function(elem){
-})
+let stateSumArr = Object.entries(stateSums);
+
+function lessThanMil (element){
+  return element[1] < 1000000
+};
+
+function getStates (element){
+  return element[0];
+};
+
+lowerSumStates = stateSumArr.filter(lessThanMil).map(getStates)
+
+
 
 
 /*
@@ -219,6 +230,19 @@ lowerSumStates = statesArr.filter(function(elem){
   `higherStateSums` should be the sum of all states with totals greater than 1,000,000
  */
 var higherStateSums = null;
+let highSums = 0;
+
+function getOverMill (element){
+  return element[1] > 1000000
+};
+
+function getTotalSums (prev, curr){
+  highSums = prev + curr[1];
+  return highSums;
+};
+
+higherStateSums = stateSumArr.filter(getOverMill).reduce(getTotalSums, 0)
+
 
 /*
   from each of the following states:
