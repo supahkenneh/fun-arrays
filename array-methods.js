@@ -12,7 +12,7 @@ const selectedStates = ['WI', 'IL', 'WY', 'OH', 'GA', 'DE'];
 
 var hundredThousandairs = null;
 
-hundredThousandairs = dataset.bankBalances.filter(function (arr) {
+hundredThousandairs = dataset.bankBalances.filter(arr => {
   if (arr.amount > 100000) {
     return arr;
   }
@@ -38,7 +38,7 @@ hundredThousandairs = dataset.bankBalances.filter(function (arr) {
 */
 var datasetWithRoundedDollar = null;
 
-datasetWithRoundedDollar = dataset.bankBalances.map(function (arr) {
+datasetWithRoundedDollar = dataset.bankBalances.map(arr => {
   let newDataSet = {}
   newDataSet.rounded = Math.round(arr.amount);
   newDataSet.state = arr.state;
@@ -73,7 +73,7 @@ datasetWithRoundedDollar = dataset.bankBalances.map(function (arr) {
 */
 var datasetWithRoundedDime = null;
 
-datasetWithRoundedDime = dataset.bankBalances.map(function (arr) {
+datasetWithRoundedDime = dataset.bankBalances.map(arr => {
   let newDataSet = {};
   newDataSet.state = arr.state;
   newDataSet.amount = arr.amount;
@@ -85,7 +85,7 @@ datasetWithRoundedDime = dataset.bankBalances.map(function (arr) {
 // set sumOfBankBalances to be the sum of all value held at `amount` for each bank object
 var sumOfBankBalances = null;
 
-sumOfBankBalances = dataset.bankBalances.reduce(function (prev, curr) {
+sumOfBankBalances = dataset.bankBalances.reduce((prev, curr) => {
   let total = prev + parseFloat(curr.amount);
   return Math.round(total * 100) / 100
 }, 0);
@@ -108,11 +108,9 @@ let total = 0;
 
 
 
-sumOfInterests = dataset.bankBalances.filter(function (elem) {
-  return selectedStates.includes(elem.state);
-})
+sumOfInterests = dataset.bankBalances.filter(elem => selectedStates.includes(elem.state))
 
-  .reduce(function (element, curr) {
+  .reduce((element, curr) => {
     total += parseFloat((curr.amount * 0.189) + curr.amount);
     return (Math.round(total * 100) / 100) + 0.01;
   }, 0);
@@ -136,7 +134,7 @@ sumOfInterests = dataset.bankBalances.filter(function (elem) {
  */
 var stateSums = {};
 
-dataset.bankBalances.map(function (element) {
+dataset.bankBalances.map((element) => {
 
   let balance = parseFloat(element.amount);
   let state = element.state;
@@ -173,19 +171,13 @@ var sumOfHighInterests = null;
 let statesArr = Object.keys(stateSums);
 let totalInterest = 0;
 
-sumOfHighInterests = statesArr.filter(function (element) {
-  return !selectedStates.includes(element);
-})
+sumOfHighInterests = statesArr.filter(element => !selectedStates.includes(element))
 
-  .map(function (element) {
-    return stateSums[element] * 0.189;
-  })
+  .map(element => stateSums[element] * 0.189)
 
-  .filter(function (element) {
-    return element > 50000;
-  })
+  .filter(element => element > 50000)
 
-  .reduce(function (prev, curr) {
+  .reduce((prev, curr) => {
     totalInterest = prev + parseFloat(curr);
     return Math.round(totalInterest * 100) / 100;
   }, 0);
@@ -207,9 +199,7 @@ let stateSumArr = Object.entries(stateSums);
 
 
 
-lowerSumStates = stateSumArr.filter(function (element) {
-  return element[1] < 1000000
-})
+lowerSumStates = stateSumArr.filter(element => element[1] < 1000000)
 
   .map(function getStates(element) {
     return element[0];
@@ -225,11 +215,9 @@ lowerSumStates = stateSumArr.filter(function (element) {
 var higherStateSums = null;
 let highSums = 0;
 
-higherStateSums = stateSumArr.filter(function (element) {
-  return element[1] > 1000000
-})
+higherStateSums = stateSumArr.filter(element => element[1] > 1000000)
 
-  .reduce(function (prev, curr) {
+  .reduce((prev, curr) => {
     highSums = prev + curr[1];
     return highSums;
   }, 0)
@@ -254,13 +242,9 @@ var areStatesInHigherStateSum = null;
 
 //let selectedStates = ['WI', 'IL', 'WY', 'OH', 'GA', 'DE'];
 
-areStatesInHigherStateSum = stateSumArr.filter(function (element) {
-  return selectedStates.includes(element[0])
-})
+areStatesInHigherStateSum = stateSumArr.filter(element => selectedStates.includes(element[0]))
 
-  .every(function (element) {
-    return element[1] > 2550000;
-  })
+  .every(element => element[1] > 2550000);
 
 
 /*
@@ -283,13 +267,9 @@ var anyStatesInHigherStateSum = null;
 
 
 
-anyStatesInHigherStateSum = stateSumArr.filter(function (element) {
-  return selectedStates.includes(element[0])
-})
+anyStatesInHigherStateSum = stateSumArr.filter(element => selectedStates.includes(element[0]))
 
-  .some(function (element) {
-    return element[1] > 2550000;
-  })
+  .some(element => element[1] > 2550000);
 
 
 module.exports = {
