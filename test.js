@@ -3,6 +3,15 @@ var dataset = require('./dataset.json');
 
 const selectedStates = ['WI', 'IL', 'WY', 'OH', 'GA', 'DE'];
 
+function includeTargetStates (elem) {
+  return selectedStates.includes(elem.state);
+}
+
+function excludeTargetStates (elem) {
+  return !selectedStates.includes(elem.state);
+}
+
+
 /*
   create an array with accounts from bankBalances that are
   greater than 100000
@@ -12,11 +21,7 @@ const selectedStates = ['WI', 'IL', 'WY', 'OH', 'GA', 'DE'];
 
 var hundredThousandairs = null;
 
-hundredThousandairs = dataset.bankBalances.filter(arr => {
-  if (arr.amount > 100000) {
-    return arr;
-  }
-});
+
 
 
 /*
@@ -37,15 +42,6 @@ hundredThousandairs = dataset.bankBalances.filter(arr => {
   assign the resulting new array to `datasetWithRoundedDollar`
 */
 var datasetWithRoundedDollar = null;
-
-datasetWithRoundedDollar = dataset.bankBalances.map(arr => {
-  let newDataSet = {}
-  newDataSet.rounded = Math.round(arr.amount);
-  newDataSet.state = arr.state;
-  newDataSet.amount = arr.amount;
-
-  return newDataSet;
-});
 
 
 /*
@@ -73,22 +69,6 @@ datasetWithRoundedDollar = dataset.bankBalances.map(arr => {
 */
 var datasetWithRoundedDime = null;
 
-datasetWithRoundedDime = dataset.bankBalances.map(arr => {
-  let newDataSet = {};
-  newDataSet.state = arr.state;
-  newDataSet.amount = arr.amount;
-  newDataSet.roundedDime = Math.round(arr.amount * 10) / 10;
-
-  return newDataSet;
-});
-
-// set sumOfBankBalances to be the sum of all value held at `amount` for each bank object
-var sumOfBankBalances = null;
-
-sumOfBankBalances = dataset.bankBalances.reduce((prev, curr) => {
-  let total = prev + parseFloat(curr.amount);
-  return Math.round(total * 100) / 100
-}, 0);
 
 /*
   from each of the following states:
@@ -103,17 +83,6 @@ sumOfBankBalances = dataset.bankBalances.reduce((prev, curr) => {
  */
 
 var sumOfInterests = null;
-let total = 0;
-
-
-
-
-sumOfInterests = dataset.bankBalances.filter(elem => selectedStates.includes(elem.state))
-
-  .reduce((element, curr) => {
-    total += parseFloat((curr.amount * 0.189) + curr.amount);
-    return (Math.round(total * 100) / 100) + 0.01;
-  }, 0);
 
 
 /*
@@ -134,20 +103,6 @@ sumOfInterests = dataset.bankBalances.filter(elem => selectedStates.includes(ele
  */
 var stateSums = {};
 
-dataset.bankBalances.map((element) => {
-
-  let balance = parseFloat(element.amount);
-  let state = element.state;
-
-  if (!stateSums[state]) {
-    stateSums[state] = 0.0;
-  }
-
-  stateSums[state] += balance;
-  stateSums[state] = Math.round(stateSums[state] * 100) / 100;
-
-  return stateSums;
-});
 
 /*
   for all states *NOT* in the following states:
@@ -168,19 +123,6 @@ dataset.bankBalances.map((element) => {
  */
 var sumOfHighInterests = null;
 
-let statesArr = Object.keys(stateSums);
-let totalInterest = 0;
-
-sumOfHighInterests = statesArr.filter(element => !selectedStates.includes(element))
-
-  .map(element => stateSums[element] * 0.189)
-
-  .filter(element => element > 50000)
-
-  .reduce((prev, curr) => {
-    totalInterest = prev + parseFloat(curr);
-    return Math.round(totalInterest * 100) / 100;
-  }, 0);
 
 
 
@@ -193,18 +135,6 @@ sumOfHighInterests = statesArr.filter(element => !selectedStates.includes(elemen
 
 var lowerSumStates = null;
 
-let stateSumArr = Object.entries(stateSums);
-
-
-
-
-
-lowerSumStates = stateSumArr.filter(element => element[1] < 1000000)
-
-  .map(function getStates(element) {
-    return element[0];
-  })
-
 
 
 
@@ -213,14 +143,8 @@ lowerSumStates = stateSumArr.filter(element => element[1] < 1000000)
   `higherStateSums` should be the sum of all states with totals greater than 1,000,000
  */
 var higherStateSums = null;
-let highSums = 0;
 
-higherStateSums = stateSumArr.filter(element => element[1] > 1000000)
 
-  .reduce((prev, curr) => {
-    highSums = prev + curr[1];
-    return highSums;
-  }, 0)
 
 
 /*
@@ -242,9 +166,7 @@ var areStatesInHigherStateSum = null;
 
 //let selectedStates = ['WI', 'IL', 'WY', 'OH', 'GA', 'DE'];
 
-areStatesInHigherStateSum = stateSumArr.filter(element => selectedStates.includes(element[0]))
 
-  .every(element => element[1] > 2550000);
 
 
 /*
@@ -265,11 +187,6 @@ var anyStatesInHigherStateSum = null;
 
 //let selectedStates = ['WI', 'IL', 'WY', 'OH', 'GA', 'DE'];
 
-
-
-anyStatesInHigherStateSum = stateSumArr.filter(element => selectedStates.includes(element[0]))
-
-  .some(element => element[1] > 2550000);
 
 
 module.exports = {
